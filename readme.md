@@ -5,6 +5,10 @@
 The	Three Good Things exercise is intended to increase happiness and a sense of	
 wellbeing. An individual records 3 good things they've done on any given day; with the intention of redirecting attention and energy away from negative and towards positive thoughts. Studies have shown that people who wrote down and shared what they were grateful for each day, for just one week, ended up being happier up to six months later.
 
+Mental health is one of the things I am passionate about and the Three Good Things exercise is something that has proved helpful to me in the past. 
+
+# Planning:
+
 ## Initial Thoughts: 
 
 - To allow users to sign up using different methods, email, Google etc.
@@ -15,12 +19,37 @@ wellbeing. An individual records 3 good things they've done on any given day; wi
 - Privacy button; so a users certain days/activities can be removed from their public feed. Or their profile can be made completely private. 
 - Provide user's with alerts if they haven't done something for a while; i.e. not logged that they've been to the gym for a week.
 - Table of a user's most popular things with drag/drop functionality so a user doesn't have to write the same things each day; they can just drag an item from their list and drop it onto a day to add it.
+- Option to flip between light and dark modes.
 
 ## Project Aims:
 
 ## User Stories:
 
+As a user I want to:
+
+- Be able to sign up using different methods.
+- Receive a confirmation email to confirm sign up.
+- Be able to reset my password by email.
+- Be able to delete my account.
+- Add/remove up to 3 things per day.
+- See a weekly view of my things.
+- See a monthly view of my things.
+- Be able to follow other individuals.
+- Be able to unfollow other individuals.
+- Make certain days private from my followers or make my profile private.
+- See a feed of my followers activities.
+- 'Like' or 'Support' others posts in my feed.
+- Receive 'Like' or 'Support' on my posts.
+- See stats/a list of my most popular things.
+- Be alerted if I haven't added anything for the current date.
+- Be alerted if I haven't done one of my more popular/regular things for a week.
+
 ## Wireframe:
 
 ## ERD:
+
+# Build Process:
+
+## Current Issues:
+
 
