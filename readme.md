@@ -13,7 +13,6 @@ Mental health is one of the things I am passionate about and the Three Good Thin
 
 - To allow users to sign up using different methods, email, Google etc.
 - To provide email confirmation of sign up and option to reset password by email.
-- Fully responsive for both desktop and mobile. 
 - Weekly and monthly calendar views of completed days; each day could be coloured differently. A completed day with 3 things logged could be green; a day with 0 things logged could be red.
 - Social Media functionality; ability to have a 'feed' of other users; ability to follow other users and 'like' or support their posts in some way.
 - Privacy button; so a users certain days/activities can be removed from their public feed. Or their profile can be made completely private. 
@@ -52,13 +51,22 @@ As a user I want to:
 - Be alerted if I haven't added anything for the current date.
 - Be alerted if I haven't done one of my more popular/regular things for a week.
 
+#
+
 ## Wireframe:
+
+I created a Wireframe of the websites main pages using Figma:
+
+![Wireframe](/Images/Wireframe.png)
+#
+
 
 ## ERD:
 
-ERD created on Canva (it would appear Lucid is currently not working) for how I planned for the various entities to interact: 
+I then created the ERD on Canva (it would appear Lucid is currently not working) for how I planned for the various entities to interact: 
 
 ![ERD](/Images/ERD.png)
+#
 
 # Build Process:
 
