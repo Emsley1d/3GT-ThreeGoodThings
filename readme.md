@@ -23,6 +23,11 @@ Mental health is one of the things I am passionate about and the Three Good Thin
 
 ## Project Aims:
 
+- To incorporate as many of my initial thoughts as possible.
+- To have full authentication and authoristation.
+- Connect the email functionality with a server host.
+
+
 ## User Stories:
 
 As a user I want to:
@@ -32,6 +37,9 @@ As a user I want to:
 - Be able to reset my password by email.
 - Be able to delete my account.
 - Add/remove up to 3 things per day.
+- Categorise my things; i.e. physical activitiy, socialising.
+- See a category breakdown of my things.
+- Edit or delete paste entries. 
 - See a weekly view of my things.
 - See a monthly view of my things.
 - Be able to follow other individuals.
@@ -47,6 +55,10 @@ As a user I want to:
 ## Wireframe:
 
 ## ERD:
+
+ERD created on Canva (it would appear Lucid is currently not working) for how I planned for the various entities to interact: 
+
+![ERD](/Images/ERD.png)
 
 # Build Process:
 
