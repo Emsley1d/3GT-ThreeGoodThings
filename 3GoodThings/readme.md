@@ -81,4 +81,8 @@ FATAL:  password authentication failed for user "postgres"
 
 - I have reset the master password in pgAdmin4; deleted and recreated the database and double checked the password I am entering connects the server in pgAdmin4. Despite the password being correct in settings.py I still receive the fatal error message.
 
+SOLUTION:
+
+- I followed the link in settings.py for databases https://docs.djangoproject.com/en/4.1/ref/settings/#databases and since I last linked a database in settings.py both a HOST and PORT are now required. I updated settings.py to match my postgres server and it now works.
+
 
