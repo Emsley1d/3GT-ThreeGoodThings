@@ -75,6 +75,10 @@ Having played around with the Wireframe and due to the nature of the site (effec
 
 ## Current Issues:
 
+#
+
+## Resolved Issues:
+
 1. Database created in pgAdmin4 and updated in settings.py however it's failing to connect; password would appear to be incorrect:
 
 FATAL:  password authentication failed for user "postgres"
@@ -84,5 +88,7 @@ FATAL:  password authentication failed for user "postgres"
 SOLUTION:
 
 - I followed the link in settings.py for databases https://docs.djangoproject.com/en/4.1/ref/settings/#databases and since I last linked a database in settings.py both a HOST and PORT are now required. I updated settings.py to match my postgres server and it now works.
+
+#
 
 
