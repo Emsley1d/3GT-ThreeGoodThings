@@ -26,6 +26,7 @@ Mental health is one of the things I am passionate about and the Three Good Thin
 - To have full authentication and authoristation.
 - Connect the email functionality with a server host.
 
+#
 
 ## User Stories:
 
@@ -51,6 +52,13 @@ As a user I want to:
 - Be alerted if I haven't added anything for the current date.
 - Be alerted if I haven't done one of my more popular/regular things for a week.
 
+#
+
+## Trello Board:
+
+I created a Trello Board to better organise and visualise the project requirements which i'll update as I work through them:
+
+![Trello](/3GoodThings/Images/Trello.png)
 #
 
 ## Wireframe:
