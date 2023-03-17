@@ -12,6 +12,6 @@ urlpatterns = [
     path('stats/', views.stats, name='stats'),
 
     #USER
-    path("signup/", SignUpView.as_view(), name="signup"),
+    path('signup/', SignUpView.as_view(), name='signup'),
 
 ]
