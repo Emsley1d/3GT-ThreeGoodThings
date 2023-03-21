@@ -13,5 +13,7 @@ urlpatterns = [
 
     #USER
     path('signup/', SignUpView.as_view(), name='signup'),
+    path("password_change/", views.PasswordChange.as_view(), name='password_change'),
+    path('password_reset/', views.PasswordReset.as_view(), name='password_reset'),
 
 ]
