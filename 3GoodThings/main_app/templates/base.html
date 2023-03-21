@@ -42,8 +42,8 @@
 
       <h1>Home</h1>
       {% if user.is_authenticated %} Hi {{ user.username }}. {% else %}
-      <p>You are not logged in</p>
-      <a href="{% url 'login' %}">Log In</a>
+      <p>You are not logged in.</p>
+      <p>To continue please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'signup' %}">sign up</a>
       {% endif %} 
 
       {% endblock %}

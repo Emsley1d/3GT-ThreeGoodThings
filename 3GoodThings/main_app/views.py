@@ -21,6 +21,7 @@ def profile(request):
 def stats(request):
     return render(request, 'stats.html')
 
+
 # USER
 
 class SignUpView(generic.CreateView):
