@@ -5,7 +5,6 @@ from .views import register
 from django.contrib.auth.models import User
 
 
-
 urlpatterns = [
 
     #SITE
@@ -21,7 +20,6 @@ urlpatterns = [
     path('user/<int:pk>', views.UserDetail.as_view(), name='user_detail'),
     path('user/<int:pk>/update', views.UserUpdate.as_view(), name='user_update'),
     path('user/<int:pk>/delete', views.UserDelete.as_view(), name='user_delete'),
-    # path('update/', views.profile, name='profile'), as already holds user update
     path('stats/', views.stats, name='stats'),
 
 ]

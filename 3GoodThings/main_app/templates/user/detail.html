@@ -2,6 +2,13 @@
 
 {% block body %}
 
-    <h1>User Detail</h1>
+    <h1>{{ user.username }}'s profile</h1>
+
+  <!-- stats -->
+  <!-- friends/followers -->
+
+  <a href="{% url 'user_update' user.id %}"><input type="submit"/></a>
+
+
     
-{% endblock body %}
+{% endblock %}
