@@ -1,7 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
 {% block body %}
 
-    <h1>User Update</h1>
-    
-{% endblock body %}
+
+
+<h1>{{ user.name }} Edit User</h1>
+
+<p>{{ user.image }}</p>
+<p></p>
+
+<div class="card-action">
+
+  <a href="{% url 'user_delete' user.id %}"><input type="submit"/></a>
+
+  <a href="{% url 'password_change' %}"><input type="submit"/></a>
+
+  <a href="{% url 'password_reset' %}">
+    <input type="submit"/></a>
+
+</div>
+
+{% endblock %}

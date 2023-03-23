@@ -3,6 +3,10 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm
 from django.urls import reverse_lazy
 from django.views import generic
+from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic import DetailView
 
 # Create your views here.
 
@@ -49,3 +53,17 @@ def register(request):
         form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
+class UserDetail(LoginRequiredMixin, DetailView):
+    model = User
+    template_name='user/detail.html'
+
+class UserUpdate(LoginRequiredMixin, UpdateView):
+    model = User
+    template_name='user/update.html'
+    fields = '__all__'
+
+class UserDelete(LoginRequiredMixin, DeleteView):
+    model = User
+    template_name='user/user_confirm_delete.html'
+    success_url = '/'

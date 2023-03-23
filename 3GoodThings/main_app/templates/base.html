@@ -26,13 +26,23 @@
             <li><a href="/" class="left brand-logo">3GT</a></li>
           </ul>
           <ul class="right">
+
+            {% if user.is_authenticated %}
             <li><a href="/about">About</a></li>
-            <li><a href="/profile">Profile</a></li>
+            <li><a href="{% url 'user_update' %}">Profile</a></li>
             <li><a href="/stats">Stats</a></li>
-            <li><a href="{% url 'login' %}">Log In</a></li>
             <li><a href="{% url 'logout' %}">Log Out</a><li>
+            <li><a href="{% url 'password_reset' %}">Reset Password</a></p>
+
+
+            {% else %}
+            <li><a href="/about">About</a></li>
+            <li><a href="{% url 'login' %}">Log In</a></li>
             <li><a href="{% url 'register' %}">Register</a></li>
             <li><a href="{% url 'password_reset' %}">Reset Password</a></p>
+            
+            {% endif %}
+
 
           </ul>
         </div>
