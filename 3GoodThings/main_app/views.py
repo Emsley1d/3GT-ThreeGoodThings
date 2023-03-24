@@ -56,7 +56,7 @@ def register(request):
 
 class UserDetail(LoginRequiredMixin, DetailView):
     model = User
-    template_name='user/detail.html'
+    template_name='user/detail.html' 
 
 class UserUpdate(LoginRequiredMixin, UpdateView):
     model = User

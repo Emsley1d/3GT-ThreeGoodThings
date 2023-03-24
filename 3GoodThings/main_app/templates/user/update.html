@@ -7,12 +7,14 @@
 
 <div class="card-action">
 
-  <a href="{% url 'user_delete' user.id %}"><input type="submit"/></a>
+    <p>Delete</p>
+  <a href="{% url 'delete' user.id %}"><input type="submit"/></a>
 
+  <p>Password Change</p>
   <a href="{% url 'password_change' %}"><input type="submit"/></a>
 
-  <a href="{% url 'password_reset' %}">
-    <input type="submit"/></a>
+  <p>Password Reset</p>
+  <a href="{% url 'password_reset' %}"><input type="submit"/></a>
 
 </div>
 

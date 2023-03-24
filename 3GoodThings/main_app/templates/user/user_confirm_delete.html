@@ -8,7 +8,7 @@
     {%csrf_token %}
     <input type="submit" value="Yes - Delete" class="btn btn-primary">
 
-    <a href="{% url 'user_detail' user.id %}">
+    <a href="{% url 'detail' user.id %}">
     <input type="" value="No - Cancel" class="btn btn-primary">
     </a>
 </form>

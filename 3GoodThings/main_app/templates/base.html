@@ -30,7 +30,6 @@
             {% if user.is_authenticated %}
             <li><a href="/about">About</a></li>
             <li><a href="{% url 'detail' user.id %}">Profile</a></li>
-            <!-- profile should equal user detail -->
             <li><a href="{% url 'logout' %}">Log Out</a><li>
             <li><a href="{% url 'password_reset' %}">Reset Password</a></p>
 
