@@ -35,8 +35,8 @@ class SignUpView(generic.CreateView):
 
 class PasswordChange(generic.CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy("login")
-    template_name = "registration/password_change.html"
+    success_url = reverse_lazy("registration/password_change_done.html")
+    template_name = "registration/password_change_form.html"
 
 class PasswordReset(generic.CreateView):
     form_class = UserCreationForm

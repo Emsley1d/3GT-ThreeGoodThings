@@ -2,19 +2,14 @@
 
 {% block body %}
 
-<h1>{{ user.username }} Edit User</h1>
+<h1>Edit User {{ user.username }}</h1>
 
 
 <div class="card-action">
 
-    <p>Delete</p>
-  <a href="{% url 'delete' user.id %}"><input type="submit"/></a>
+  <a href="{% url 'delete' user.id %}">Delete Account</a><br>
+  <a href="{% url 'password_change' %}">Change Password</a>
 
-  <p>Password Change</p>
-  <a href="{% url 'password_change' %}"><input type="submit"/></a>
-
-  <p>Password Reset</p>
-  <a href="{% url 'password_reset' %}"><input type="submit"/></a>
 
 </div>
 
