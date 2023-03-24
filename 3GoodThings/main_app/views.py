@@ -65,5 +65,6 @@ class UserUpdate(LoginRequiredMixin, UpdateView):
 
 class UserDelete(LoginRequiredMixin, DeleteView):
     model = User
-    template_name='user/user_confirm_delete.html'
     success_url = '/'
+    template_name='user/user_confirm_delete.html'
+
