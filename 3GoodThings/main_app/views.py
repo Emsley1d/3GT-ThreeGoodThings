@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic import DetailView
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+
 
 # Create your views here.
 
@@ -43,15 +46,15 @@ class PasswordReset(generic.CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/password_reset.html"
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'registration/register.html', {'form': form})
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#     else:
+#         form = UserRegistrationForm()
+#     return render(request, 'registration/register.html', {'form': form})
 
 
 class UserDetail(LoginRequiredMixin, DetailView):
@@ -68,3 +71,21 @@ class UserDelete(LoginRequiredMixin, DeleteView):
     success_url = '/'
     template_name='user/user_confirm_delete.html'
 
+
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = UserRegistrationForm()
+        
+    helper = FormHelper()
+    helper.form_method = 'POST'
+    helper.add_input(Submit('submit', 'Register'))
+    form.helper = helper
+    
+    return render(request, 'registration/register.html', {'form': form})
