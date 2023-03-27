@@ -9,6 +9,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic import DetailView
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from django.contrib import messages
 
 
 # Create your views here.
@@ -71,7 +72,9 @@ class UserDelete(LoginRequiredMixin, DeleteView):
     success_url = '/'
     template_name='user/user_confirm_delete.html'
 
-
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Account successfully deleted.')
+        return super().delete(request, *args, **kwargs)
 
 
 def register(request):
@@ -79,10 +82,11 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Registration successful.' )
             return redirect('home')
     else:
         form = UserRegistrationForm()
-        
+
     helper = FormHelper()
     helper.form_method = 'POST'
     helper.add_input(Submit('submit', 'Register'))

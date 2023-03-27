@@ -48,6 +48,25 @@
 
     <main class="container">
       {% block body %}
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <!-- or............
+
+        {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li class="alert {{ message.tags }} alert-dismissible shadow fade show" role="alert"></li>
+            {% endfor %}
+          </ul>
+        {% endif %} -->
+
+
 
       <h1>Home</h1>
       {% if user.is_authenticated %} Hi {{ user.username }}. {% else %}
