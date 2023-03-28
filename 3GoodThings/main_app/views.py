@@ -39,24 +39,20 @@ class SignUpView(generic.CreateView):
 
 class PasswordChange(generic.CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy("registration/password_change_done.html")
+    # still redirects to change_done
+    success_url = '/'
     template_name = "registration/password_change_form.html"
+
+    # def form_valid(self, form):
+    #     response = super().form_valid(form)
+    #     # doesnt work yet.
+    #     messages.success(self.request, 'Your password has been changed successfully.')
+    #     return response
 
 class PasswordReset(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
     template_name = "registration/password_reset.html"
-
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#     else:
-#         form = UserRegistrationForm()
-#     return render(request, 'registration/register.html', {'form': form})
-
 
 class UserDetail(LoginRequiredMixin, DetailView):
     model = User
@@ -73,7 +69,8 @@ class UserDelete(LoginRequiredMixin, DeleteView):
     template_name='user/user_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Account successfully deleted.')
+        # doesnt work yet.
+        # messages.success(request, 'Account successfully deleted.')
         return super().delete(request, *args, **kwargs)
 
 
@@ -81,11 +78,16 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Registration successful.' )
+            messages.success(request, 'Registration successful. Please log in to continue.')
             return redirect('home')
     else:
         form = UserRegistrationForm()
+        # messages.error(request, 'Registration unsuccessful, please try again.')
+
+        # all_messages = messages.get_messages(request)
+        # for message in all_messages:
+        #     message.used = True
+
 
     helper = FormHelper()
     helper.form_method = 'POST'
