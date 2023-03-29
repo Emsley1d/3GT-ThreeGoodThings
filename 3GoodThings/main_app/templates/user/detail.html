@@ -1,14 +1,22 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 
-{% block body %}
+{% block body %} 
 
-    <h1>{{ user.username }}'s profile</h1>
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li class="alert {{ message.tags }} alert-dismissible shadow fade show" role="alert">
+    {{ message }}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
 
-  <!-- stats -->
-  <!-- friends/followers -->
+<h1>{{ user.username }}'s profile</h1>
 
-  <a href="{% url 'update' user.id %}">Edit Profile</a>
+<!-- stats -->
+<!-- friends/followers -->
 
+<a href="{% url 'update' user.id %}">Edit Profile</a>
 
-    
 {% endblock %}
