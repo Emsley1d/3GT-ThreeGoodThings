@@ -68,17 +68,18 @@ class UserDelete(LoginRequiredMixin, DeleteView):
     success_url = '/'
     template_name='user/user_confirm_delete.html'
 
-    def delete(self, request, *args, **kwargs):
-        # doesnt work yet.
-        # messages.success(request, 'Account successfully deleted.')
-        return super().delete(request, *args, **kwargs)
+    # def delete(self, request, *args, **kwargs):
+    #     # doesnt work yet.
+    #     # messages.success(request, 'Account successfully deleted.')
+    #     return super().delete(request, *args, **kwargs)
 
 
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            messages.success(request, 'Registration successful. Please log in to continue.')
+            user = form.save()
+            # messages.success(request, 'Registration successful. Please log in to continue.')
             return redirect('home')
     else:
         form = UserRegistrationForm()
