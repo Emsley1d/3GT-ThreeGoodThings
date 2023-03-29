@@ -28,9 +28,6 @@ def help(request):
 def profile(request):
     return render(request, 'profile.html')
 
-def stats(request):
-    return render(request, 'stats.html')
-
 
 # USER
 
@@ -45,16 +42,23 @@ class SignUpView(generic.CreateView):
 #     success_url = reverse_lazy('home')
 #     template_name = "registration/password_change_form.html"
 
-#     def form_valid(self, form):
+#     def form_valid(self, form,):
 #         response = super().form_valid(form)
 #         # !doesnt work yet.
 #         messages.success(self.request, 'Your password has been changed successfully.')
-#         return response
+#         return redirect('home')
     
-#     def get_success_url(self):
-#         return self.success_url
+    # def get_success_url(self):
+    #     return self.success_url
 
-#! doesnt work either
+class PasswordChange(PasswordChangeView):
+    success_url = reverse_lazy('user/detail.html')
+    template_name = "registration/password_change_form.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Your password has been changed successfully.')
+        return super().form_valid(form)
+    
 class CustomPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'registration/password_change_form.html'
     success_url = reverse_lazy('detail')
@@ -74,17 +78,12 @@ class UserUpdate(LoginRequiredMixin, UpdateView):
     template_name='user/update.html'
     fields = '__all__'
 
-class UserDelete(LoginRequiredMixin, DeleteView):
+class UserDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = User
-    success_url = '/'
     template_name='user/user_confirm_delete.html'
-
-    def delete(self, request, *args, **kwargs):
-        # ! doesnt work yet.
-        messages.success(request, 'Account successfully deleted.')
-        return super().delete(request, *args, **kwargs)
-
-
+    success_url = '/'
+    success_message = "Your 3GT account has been deleted."
+    
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
