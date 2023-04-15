@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeDoneView
 from django.views.generic import DetailView
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -36,7 +37,7 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
-# class PasswordChange(generic.CreateView):
+# class PasswordChangeDone(PasswordChangeDoneView):
 #     form_class = UserCreationForm
 #     # !still redirects to change_done
 #     success_url = reverse_lazy('home')
@@ -47,22 +48,48 @@ class SignUpView(generic.CreateView):
 #         # !doesnt work yet.
 #         messages.success(self.request, 'Your password has been changed successfully.')
 #         return redirect('home')
-    
-    # def get_success_url(self):
-    #     return self.success_url
 
+class PasswordChangeDone(PasswordChangeDoneView):
+    template_name = 'registration/password_change_done.html'
+
+    def get_success_url(self):
+        return reverse_lazy('detail', args=[self.request.user.pk])
+
+# class PasswordChange(PasswordChangeView):
+#     success_url = reverse_lazy('detail', args=[self.request.user.pk])
+#     template_name = 'user/detail.html'
+
+#     def form_valid(self, form):
+#         messages.success(self.request, 'Your password has been changed successfully.')
+#         return super().form_valid(form)
+    
 class PasswordChange(PasswordChangeView):
-    success_url = reverse_lazy('user/detail.html')
-    template_name = "registration/password_change_form.html"
+    template_name = 'registration/password_change_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.success_url = reverse_lazy('detail', args=[request.user.pk])
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, 'Your password has been changed successfully.')
         return super().form_valid(form)
     
+# class CustomPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
+#     template_name = 'registration/password_change_form.html'
+#     success_url = reverse_lazy('detail')
+#     success_message = "Your password has been changed successfully."
+
 class CustomPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'registration/password_change_form.html'
-    success_url = reverse_lazy('detail')
     success_message = "Your password has been changed successfully."
+
+    def get_success_url(self):
+        return reverse_lazy('detail', args=[self.request.user.pk])
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, self.success_message)
+        return redirect(self.get_success_url())
 
 class PasswordReset(generic.CreateView):
     form_class = UserCreationForm
