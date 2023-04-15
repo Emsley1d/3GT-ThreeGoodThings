@@ -37,31 +37,12 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
-# class PasswordChangeDone(PasswordChangeDoneView):
-#     form_class = UserCreationForm
-#     # !still redirects to change_done
-#     success_url = reverse_lazy('home')
-#     template_name = "registration/password_change_form.html"
-
-#     def form_valid(self, form,):
-#         response = super().form_valid(form)
-#         # !doesnt work yet.
-#         messages.success(self.request, 'Your password has been changed successfully.')
-#         return redirect('home')
-
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'registration/password_change_done.html'
 
     def get_success_url(self):
         return reverse_lazy('detail', args=[self.request.user.pk])
-
-# class PasswordChange(PasswordChangeView):
-#     success_url = reverse_lazy('detail', args=[self.request.user.pk])
-#     template_name = 'user/detail.html'
-
-#     def form_valid(self, form):
-#         messages.success(self.request, 'Your password has been changed successfully.')
-#         return super().form_valid(form)
+    
     
 class PasswordChange(PasswordChangeView):
     template_name = 'registration/password_change_form.html'
