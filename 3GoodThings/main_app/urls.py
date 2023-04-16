@@ -19,7 +19,7 @@ urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('password_change/', views.PasswordChange.as_view(), name='password_change'),
     path('change-password/', views.PasswordChangeView.as_view(), name='password_change'),
-    path('change-password/', views.PasswordChangeDoneView.as_view(), name='password_change'),
+    path('change-password/', views.PasswordChangeDoneView.as_view(), name='password_change_done'),
 
     path('password_reset/', views.PasswordReset.as_view(), name='password_reset'),
     path('register/', register, name='register'),
