@@ -58,7 +58,7 @@ As a user I want to:
 
 I created a Trello Board to better organise and visualise the project requirements which i'll update as I work through them:
 
-![Trello](/3GoodThings/Images/Trello.png)
+![Trello](/Images/Trello.png)
 #
 
 ## Wireframe:
@@ -154,7 +154,6 @@ Spent enough time trying to get them to work for one day and it is largely cosme
 
 I want flash messages for:
 Succesful registration.
-Unsuccesful registration.
 Deleting profile.
 Password change.
 
@@ -165,17 +164,58 @@ message.delete() also now obsolete so had to use the below:
         for message in all_messages:
             message.used = True
 
-Then realised Log In was broken.
-Despite using correct credentials, registering with new details etc when I log in I receive the below error message regardless.
+ISSUE 4
+ISSUE 4 RESOLVED.
 
-"Please enter a correct username and password. Note that both fields may be case-sensitive."
+Now amending password_change_done.html to user/detail.html and adding fash message to user/detail.html to confirm password change.
+password_change_done.html deleted.
 
-Attempted to fix with dedicated log in view.
-Removed crispy forms from log in page.
-Removed flash messages from base.
-Removed unused from django.contrib.auth.models import User from urls.py.
-Ammended password change back to how it was previously.
-git logged back to previous commit 
+Succesful registration - done.
+
+Added print message that should appear upon succesful user delete however it doesn't appear in console. 
+User delete however works as user is deleted in Django admin.
+
+Deleting profile. - done.
+Achieved with "SuccessMessageMixin" and then adding success_message to view:
+success_message = "Your 3GT account has been deleted."
+
+----------------------------------------------------------------
+
+RETURNED FROM 2 WEEK HOLIDAY.
+
+Need to work on Flash message for Password change; currently reverts to django admin page?
+As previously noted:
+
+"Now amending password_change_done.html to user/detail.html and adding fash message to user/detail.html to confirm password change.
+password_change_done.html deleted"
+
+password_reset_done.html could also be deleted and redirected to "/" with a flash message of password successfully changed.
+
+recreated password_change_done.html and will forgo the flash message for the time being as struggling to get it to work.
+
+
+One of the big aims of the project for me was to connect the email functionality with a server host; so any emails triggered for password reset etc will actually be sent to user's inboxes as opposed to saved into a 'sent_emails' folder in VS Code. This was one of my aims for Project3 (NutriC02) on General Assembly's course but I ran out of time.
+
+password_reset_email.html file created.
+Tested it and sent email with html template apears in 'sent emails' folder.
+(SCREENSHOT)
+
+Email settings added to settings.py.
+secrets.json and .gitignore created.
+Gmail account created and email password hidden.
+
+error due to being unable to locate secrets.json:
+FileNotFoundError: [Errno 2] No such file or directory: 'secrets.json'
+double checked spelling of all occurences of secrets.json.
+tried using absoulte path to secrets.json instead of relative but received same error.
+moved secrets.json and .gitignore into 3GoodThings folder (which then contains main_app etc).
+
+ISSUE 5
+attempted password reset however received error of:
+"SMTPAuthenticationError at /main_app/password_reset/" in browser.
+IMAP allowed in gmail settings. 
+
+
 
 
 
@@ -183,6 +223,12 @@ git logged back to previous commit
 
 
 ## Current Issues:
+
+5. When attempting to send a password reset email to a registered address I receive error: "SMTPAuthenticationError at /main_app/password_reset/" with Exception Value of: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials r5-20020adfdc85000000b002f985eee030sm3934022wrj.84 - gsmtp')
+
+- Double checked password/address was correct for 3gtproject@gmail.com; then changed password for account and updated in VS Code.
+- Double checked SMTP server and port number were correct.
+- Online suggestion point to turning "Less secure app access" on in the associated Gmail account however this option is now obsolete. 
 
 
 #
@@ -229,6 +275,24 @@ SOLUTION:
     path('user/<int:pk>/detail', views.UserDetail.as_view(), name='detail'),
     path('user/<int:pk>/update', views.UserUpdate.as_view(), name='update'),
     path('user/<int:pk>/delete', views.UserDelete.as_view(), name='delete'),
+
+#
+
+4. Despite using correct log in credentials; when trying to log in I am met with error message of:
+
+"Please enter a correct username and password. Note that both fields may be case-sensitive."
+
+- Attempted to fix with dedicated log in view.
+- Removed crispy forms from log in page.
+- Removed flash messages from base.
+- Removed unused from django.contrib.auth.models import User from urls.py.
+- Ammended password change back to how it was previously.
+- git logged back to previous commit; carried on coding. Commited again.
+- Came to work the following day and had same issue with log in credentials.
+- Going to Django admin after creating new user and no new user is saved in Django administration. So instead of issue with log in it would appear new registered users aren't being saved.
+
+SOLUTION:
+- Checked my register view and I must have accidently deleted "user = form.save()" from it. I created a couple of new users and managed to succesfully log in with them. I checked Django Admin and all had been saved.
 
 #
 
