@@ -15,10 +15,6 @@ from django.contrib.messages import constants as messages
 import os
 import json
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
-    secrets = json.load(f)
-
 # with open('secrets.json') as f:
 #     secrets = json.load(f)
 
@@ -154,7 +150,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = '3gtproject@gmail.com'
+EMAIL_HOST_USER = "3gtproject@gmail.com"
+
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
+#     secrets = json.load(f)
+
+with open('secrets.json') as f:
+    secrets = json.load(f)
+
 EMAIL_HOST_PASSWORD = secrets['EMAIL_HOST_PASSWORD']
 
 # CRISPY FORMS
