@@ -11,12 +11,13 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import secrets
 from django.contrib.messages import constants as messages
 import os
 import json
 
-# with open('secrets.json') as f:
-#     secrets = json.load(f)
+with open('secrets.json') as f:
+    secrets = json.load(f)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -147,7 +148,7 @@ LOGOUT_REDIRECT_URL = "home"
 # EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST = "smtp-relay.gmail.com"
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
@@ -157,10 +158,19 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
 #     secrets = json.load(f)
 
-with open('secrets.json') as f:
-    secrets = json.load(f)
+# with open('secrets.json') as f:
+#     secrets = json.load(f)
 
-EMAIL_HOST_PASSWORD = secrets['EMAIL_HOST_PASSWORD']
+# EMAIL_HOST_PASSWORD = secrets['EMAIL_HOST_PASSWORD']
+
+
+# AWS EMAIL
+EMAIL_BACKEND = 'django_ses.SESBackend'
+AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = secrets['AWS_SECRET_ACCESS_KEY']
+AWS_SES_REGION_NAME = 'us-east-2'
+AWS_SES_REGION_ENDPOINT ='email.us-east-2.amazonaws.com'
+DEFAULT_FROM_EMAIL = '3gtproject@gmail.com'
 
 # CRISPY FORMS
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
