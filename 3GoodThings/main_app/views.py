@@ -27,6 +27,9 @@ from main_app.models import EmailVerification
 from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 from django.conf import settings
+import boto3
+from botocore.exceptions import ClientError
+
 
 
 
@@ -86,6 +89,8 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
+            # Initialize the SES client
+            ses = boto3.client('ses', region_name=settings.AWS_SES_REGION_NAME)
             # Create user object
             user = form.save()
             # Generate verification code
@@ -93,7 +98,7 @@ def register(request):
             # Create EmailVerification object
             EmailVerification.objects.create(email=user.email, verification_code=verification_code)
             # Send verification email to user
-            send_verification_email(user.email, verification_code)
+            send_verification_email(ses, user.email, verification_code)
             messages.success(request, 'Registration successful. Please check your email to verify your account.')
             return redirect('home')
     else:
@@ -108,12 +113,35 @@ def register(request):
     form.helper = helper
     return render(request, 'registration/register.html', {'form': form})
 
-def send_verification_email(email, verification_code):
+def send_verification_email(ses, email, verification_code):
     subject = 'Please Verify Your Email Address'
     message = f'Hi, please click on the following link to verify your email address: {settings.BASE_URL}/verify-email/{verification_code}/'
     from_email = settings.DEFAULT_FROM_EMAIL
-    recipient_list = [email]
-    send_mail(subject, message, from_email, recipient_list)
+    to_emails = [email]
+    try:
+        response = ses.send_email(
+            Destination={
+                'ToAddresses': to_emails
+            },
+            Message={
+                'Body': {
+                    'Text': {
+                        'Charset': 'UTF-8',
+                        'Data': message,
+                    },
+                },
+                'Subject': {
+                    'Charset': 'UTF-8',
+                    'Data': subject,
+                },
+            },
+            Source=from_email,
+        )
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+        raise
+    else:
+        print(f"Verification email sent to {email}. Message ID: {response['MessageId']}")
 
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'registration/password_change_done.html'
