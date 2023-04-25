@@ -14,9 +14,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-
-
-
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
 from django.contrib.auth.models import User
@@ -25,6 +22,11 @@ from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
+import secrets
+from main_app.models import EmailVerification
+from django.contrib.auth import authenticate, login
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 
@@ -50,6 +52,69 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             messages.success(request, 'Registration successful. Please log in to continue.')
+#             return redirect('home')
+#     else:
+#         form = UserRegistrationForm()
+#         messages.error(request, 'Registration unsuccessful, please try again.')
+
+#         all_messages = messages.get_messages(request)
+#         for message in all_messages:
+#             message.used = True
+
+
+#     helper = FormHelper()
+#     helper.form_method = 'POST'
+#     helper.add_input(Submit('submit', 'Register'))
+#     form.helper = helper
+    
+#     return render(request, 'registration/register.html', {'form': form})
+
+# #! AWS EMAIL VERIFICATION
+# # Generate a random verification code
+# verification_code = secrets.token_urlsafe(32)
+
+# # Create a new record in the EmailVerification model
+# EmailVerification.objects.create(email=email, verification_code=verification_code)
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            # Create user object
+            user = form.save()
+            # Generate verification code
+            verification_code = secrets.token_urlsafe(20)
+            # Create EmailVerification object
+            EmailVerification.objects.create(email=user.email, verification_code=verification_code)
+            # Send verification email to user
+            send_verification_email(user.email, verification_code)
+            messages.success(request, 'Registration successful. Please check your email to verify your account.')
+            return redirect('home')
+    else:
+        form = UserRegistrationForm()
+    messages.error(request, 'Registration unsuccessful, please try again.')
+    all_messages = messages.get_messages(request)
+    for message in all_messages:
+        message.used = True
+    helper = FormHelper()
+    helper.form_method = 'POST'
+    helper.add_input(Submit('submit', 'Register'))
+    form.helper = helper
+    return render(request, 'registration/register.html', {'form': form})
+
+def send_verification_email(email, verification_code):
+    subject = 'Please Verify Your Email Address'
+    message = f'Hi, please click on the following link to verify your email address: {settings.BASE_URL}/verify-email/{verification_code}/'
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list)
+
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'registration/password_change_done.html'
 
@@ -68,11 +133,6 @@ class PasswordChange(PasswordChangeView):
         messages.success(self.request, 'Your password has been changed successfully.')
         return super().form_valid(form)
     
-# class CustomPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
-#     template_name = 'registration/password_change_form.html'
-#     success_url = reverse_lazy('detail')
-#     success_message = "Your password has been changed successfully."
-
 class CustomPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'registration/password_change_form.html'
     success_message = "Your password has been changed successfully."
@@ -89,22 +149,6 @@ class PasswordReset(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
     template_name = "registration/password_reset.html"
-
-# def password_reset_request(request):
-#     if request.method == "POST":
-#         password_reset_form = PasswordResetForm(request.POST)
-#         if password_reset_form.is_valid():
-#             email = password_reset_form.cleaned_data['email']
-#             password_reset_form.save(
-#                 request=request,
-#                 use_https=request.is_secure(),
-#                 email_template_name='registration/password_reset_email.html'
-#             )
-#             messages.success(request, 'An email has been sent with instructions to reset your password.')
-#             return render(request, 'registration/password_reset_done.html')
-#     else:
-#         password_reset_form = PasswordResetForm()
-#     return render(request=request, template_name='registration/password_reset_form.html', context={'password_reset_form': password_reset_form})
 
 def password_reset_request(request):
 	if request.method == "POST":
@@ -149,25 +193,3 @@ class UserDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     success_url = '/'
     success_message = "Your 3GT account has been deleted."
     
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            messages.success(request, 'Registration successful. Please log in to continue.')
-            return redirect('home')
-    else:
-        form = UserRegistrationForm()
-        messages.error(request, 'Registration unsuccessful, please try again.')
-
-        all_messages = messages.get_messages(request)
-        for message in all_messages:
-            message.used = True
-
-
-    helper = FormHelper()
-    helper.form_method = 'POST'
-    helper.add_input(Submit('submit', 'Register'))
-    form.helper = helper
-    
-    return render(request, 'registration/register.html', {'form': form})
