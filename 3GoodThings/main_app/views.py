@@ -30,10 +30,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 import boto3
 from botocore.exceptions import ClientError
-
-# Generate verification code
-verification_code = secrets.token_urlsafe(20)
-
+import random
+import string
 
 
 # Create your views here.
@@ -58,32 +56,11 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             messages.success(request, 'Registration successful. Please log in to continue.')
-#             return redirect('home')
-#     else:
-#         form = UserRegistrationForm()
-#         messages.error(request, 'Registration unsuccessful, please try again.')
-
-#         all_messages = messages.get_messages(request)
-#         for message in all_messages:
-#             message.used = True
-
-
-#     helper = FormHelper()
-#     helper.form_method = 'POST'
-#     helper.add_input(Submit('submit', 'Register'))
-#     form.helper = helper
-    
-#     return render(request, 'registration/register.html', {'form': form})
-
 # #! AWS EMAIL VERIFICATION
 # # Generate a random verification code
-# verification_code = secrets.token_urlsafe(32)
+# verification_code = secrets.token_urlsafe(20)
+verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+
 
 # # Create a new record in the EmailVerification model
 # EmailVerification.objects.create(email=email, verification_code=verification_code)
@@ -95,6 +72,9 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
+            print(secrets)
+            type(secrets)
+            dir(secrets)
             # Initialize the SES client
             # ses = boto3.client('ses', region_name=settings.AWS_SES_REGION_NAME)
             ses = boto3.client('ses', region_name='us-east-1', aws_access_key_id=secrets['AWS_ACCESS_KEY_ID'], aws_secret_access_key=secrets['AWS_SECRET_ACCESS_KEY'])
