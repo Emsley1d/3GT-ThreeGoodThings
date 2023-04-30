@@ -23,6 +23,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 import secrets
+import json
 from main_app.models import EmailVerification
 from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
@@ -30,6 +31,8 @@ from django.conf import settings
 import boto3
 from botocore.exceptions import ClientError
 
+# Generate verification code
+verification_code = secrets.token_urlsafe(20)
 
 
 
@@ -85,12 +88,16 @@ class SignUpView(generic.CreateView):
 # # Create a new record in the EmailVerification model
 # EmailVerification.objects.create(email=email, verification_code=verification_code)
 
+with open('secrets.json') as f:
+    secrets = json.load(f)
+
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             # Initialize the SES client
-            ses = boto3.client('ses', region_name=settings.AWS_SES_REGION_NAME)
+            # ses = boto3.client('ses', region_name=settings.AWS_SES_REGION_NAME)
+            ses = boto3.client('ses', region_name='us-east-1', aws_access_key_id=secrets['AWS_ACCESS_KEY_ID'], aws_secret_access_key=secrets['AWS_SECRET_ACCESS_KEY'])
             # Create user object
             user = form.save()
             # Generate verification code
