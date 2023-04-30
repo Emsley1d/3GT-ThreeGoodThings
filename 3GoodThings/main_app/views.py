@@ -56,7 +56,7 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
-# #! AWS EMAIL VERIFICATION
+#! AWS EMAIL VERIFICATION
 
 with open('secrets.json') as f:
     secrets = json.load(f)
@@ -101,7 +101,7 @@ def register(request):
 
 def send_verification_email(ses, email, verification_code):
     subject = 'Please Verify Your Email Address'
-    message = f'Hi, please click on the following link to verify your email address: {settings.BASE_URL}/verify-email/{verification_code}/'
+    message = f'Hi, please click on the following link to verify your email address: {settings.BASE_URL}/verify-email/{verification_code}/.'
     from_email = settings.DEFAULT_FROM_EMAIL
     to_emails = [email]
     try:
@@ -129,6 +129,19 @@ def send_verification_email(ses, email, verification_code):
     else:
         print(f"Verification email sent to {email}. Message ID: {response['MessageId']}")
 
+# VERIFY LINK IN VERIFICATION EMAIL
+def verify_email(request, verification_code):
+    try:
+        user = User.objects.get(email_verification_code=verification_code)
+        user.is_email_verified = True
+        user.save()
+        messages.success(request, 'Email address verified. You can now log in.')
+        return redirect(settings.LOGIN_URL)
+    except User.DoesNotExist:
+        messages.error(request, 'Invalid verification code.')
+        return redirect('home')
+    
+    
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'registration/password_change_done.html'
 
@@ -191,6 +204,7 @@ def password_reset_request(request):
 					return redirect ("/password_reset/done/")
 	password_reset_form = PasswordResetForm()
 	return render(request=request, template_name="3GoodThings/main_app/templates/registration/password_reset_email.html", context={"password_reset_form":password_reset_form})
+
 
 class UserDetail(LoginRequiredMixin, DetailView):
     model = User

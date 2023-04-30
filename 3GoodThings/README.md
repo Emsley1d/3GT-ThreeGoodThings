@@ -216,6 +216,11 @@ attempted password reset however received error of:
 
 RESOLVED ISSUE 5.
 (SCREENSHOT OF SUCCESFUL EMAIL TO MY GMAIL ACCOUNT)
+
+--------------------------------------------------------------------------------
+
+EMAIL ADDRESS VERIFICATION
+
 However in resolving issue 5 I came to realise that I will only be able to send password reset emails to users if their email address is verified on AWS. 
 I understand the actions I need to take to achieve this are as below:
 
@@ -276,6 +281,26 @@ downloaded and installed OpenSSL and imported to views.py.
 uinstalled then reinstalled secrets.
 
 still receiving 'dict' object has no attribute 'token_urlsafe' error so reverted back to verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=20)) and it worked - i received an email asking me to click on a line to verify my email address.
+(SCREENSHOT OF SUCCESS MESSAGE FOR VERIFICATION EMAIL)
+
+------------------------------------------------------------
+
+EMAIL ADDRESS VERIFICATION
+
+Clicking on the link in the email results in a 404 Page not found error:
+
+Page not found (404)
+Request Method:	GET
+Request URL:	http://localhost:8000/verify-email/qPmuOToy6msv6J1qtFPe/
+
+Created verify_email view and added path to urls.py.
+Now get the following error when clicking the verify password link:
+
+FieldError at /verify-email/qPmuOToy6msv6J1qtFPe/
+Cannot resolve keyword 'email_verification_code' into field. Choices are: date_joined, email, first_name, groups, id, is_active, is_staff, is_superuser, last_login, last_name, logentry, password, user_permissions, username
+
+
+
 
 
 #

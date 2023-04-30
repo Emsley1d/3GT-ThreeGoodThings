@@ -17,10 +17,10 @@ urlpatterns = [
 
     #USER
     path('signup/', SignUpView.as_view(), name='signup'),
+    path('verify-email/<str:verification_code>/', views.verify_email, name='verify-email'),
     path('password_change/', views.PasswordChange.as_view(), name='password_change'),
     path('change-password/', views.PasswordChangeView.as_view(), name='password_change'),
     path('change-password/', views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-
     path('password_reset/', views.PasswordReset.as_view(), name='password_reset'),
     path('register/', register, name='register'),
     path('user/<int:pk>/detail', views.UserDetail.as_view(), name='detail'),
