@@ -30,9 +30,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 import boto3
 from botocore.exceptions import ClientError
+import OpenSSL
 import random
 import string
-
 
 # Create your views here.
 
@@ -57,16 +57,14 @@ class SignUpView(generic.CreateView):
     template_name = "registration/signup.html"
 
 # #! AWS EMAIL VERIFICATION
-# # Generate a random verification code
-# verification_code = secrets.token_urlsafe(20)
-verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+
+with open('secrets.json') as f:
+    secrets = json.load(f)
 
 
 # # Create a new record in the EmailVerification model
 # EmailVerification.objects.create(email=email, verification_code=verification_code)
 
-with open('secrets.json') as f:
-    secrets = json.load(f)
 
 def register(request):
     if request.method == 'POST':
@@ -76,12 +74,13 @@ def register(request):
             type(secrets)
             dir(secrets)
             # Initialize the SES client
-            # ses = boto3.client('ses', region_name=settings.AWS_SES_REGION_NAME)
             ses = boto3.client('ses', region_name='us-east-1', aws_access_key_id=secrets['AWS_ACCESS_KEY_ID'], aws_secret_access_key=secrets['AWS_SECRET_ACCESS_KEY'])
             # Create user object
             user = form.save()
             # Generate verification code
-            verification_code = secrets.token_urlsafe(20)
+            # verification_code = secrets.token_urlsafe(20)
+            verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+
             # Create EmailVerification object
             EmailVerification.objects.create(email=user.email, verification_code=verification_code)
             # Send verification email to user
