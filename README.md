@@ -213,8 +213,127 @@ moved secrets.json and .gitignore into 3GoodThings folder (which then contains m
 ISSUE 5
 attempted password reset however received error of:
 "SMTPAuthenticationError at /main_app/password_reset/" in browser.
-IMAP allowed in gmail settings. 
 
+RESOLVED ISSUE 5.
+(SCREENSHOT OF SUCCESFUL EMAIL TO MY GMAIL ACCOUNT)
+
+--------------------------------------------------------------------------------
+
+EMAIL ADDRESS VERIFICATION
+
+However in resolving issue 5 I came to realise that I will only be able to send password reset emails to users if their email address is verified on AWS. 
+I understand the actions I need to take to achieve this are as below:
+
+"When a user signs up with their email address, you can trigger a verification email to be sent to that email address using the Amazon SES API or SDK. The email will contain a link or a code that the user can use to confirm that they own the email address.
+
+To implement this process in your Django project, you can follow these general steps:
+
+1. Configure Amazon SES for your Django project by adding your AWS access keys and configuring the email backend settings in your settings.py file.
+2. When a user signs up with their email address, generate a verification code or link and store it in your database along with the user's email address.
+3. Use the Amazon SES API or SDK to send a verification email to the user's email address. You can customize the email message and subject to include the verification code or link.
+4. When the user clicks on the verification link or enters the verification code, verify the email address using the Amazon SES API or SDK. If the email address is verified, update your database to reflect the verification status.
+5. When sending emails from your Django project, check that the "From" email address and the email addresses of any recipients have been verified before sending the email. You can use the AWS SES SDK to check the verification status of an email address."
+
+However; after testing the password reset by email a number of times it would appear that 2 password reset emails are sent w
+
+Email verification model created.
+Updated my register view in views.py
+Added send_verification_email to views.py
+Tested registration. Recieved below error:
+
+AttributeError at /register/
+'Settings' object has no attribute 'BASE_URL'
+Points to this line in views.py: "message = f'Hi, please click on the following link to verify your email address: {settings.BASE_URL}/verify-email/{verification_code}/'"
+
+Updated settings with BASE_URL of local host port.
+Attempted to register again and received the below error so registered email address is still not being verified on AWS's end:
+"MessageRejected at /register/
+An error occurred (MessageRejected) when calling the SendRawEmail operation: Email address is not verified. The following identities failed the check in region US-EAST-1:"
+
+modified send_verification_email to use AWS SDK for Python (boto3) to send the verification email.
+
+Received new error of "NoCredentialsError at /register/
+Unable to locate credentials"
+
+Explicitly passed my aws credentials to boto3.client() and now receive error message:
+added "import json" to views.py and instructed to to read secrets the secrets:
+
+with open('secrets.json') as f:
+   secrets = json.load(f)
+
+
+I now receive a new error of:
+
+AttributeError at /register/
+'dict' object has no attribute 'token_urlsafe'
+
+verified in django admin users are being created and saved. 
+print(secrets) statement is working as secrets are being printed to console so are being accessed in views.py
+tried replacing the secrets.token_urlsafe with python's random:
+verification_code = secrets.token_urlsafe(20)
+verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+didnt resolve error so ammended back.
+
+tried to uninstall and reinstall secrets but received error:
+ImportError: Installing this module requires OpenSSL python bindings
+
+downloaded and installed OpenSSL and imported to views.py.
+uinstalled then reinstalled secrets.
+
+still receiving 'dict' object has no attribute 'token_urlsafe' error so reverted back to verification_code = ''.join(random.choices(string.ascii_letters + string.digits, k=20)) and it worked - i received an email asking me to click on a line to verify my email address.
+(SCREENSHOT OF SUCCESS MESSAGE FOR VERIFICATION EMAIL)
+
+------------------------------------------------------------
+
+EMAIL ADDRESS VERIFICATION
+
+Clicking on the link in the email results in a 404 Page not found error:
+
+Page not found (404)
+Request Method:	GET
+Request URL:	http://localhost:8000/verify-email/qPmuOToy6msv6J1qtFPe/
+
+Created verify_email view and added path to urls.py.
+Now get the following error when clicking the verify password link:
+
+    FieldError at /verify-email/qPmuOToy6msv6J1qtFPe/
+    Cannot resolve keyword 'email_verification_code' into field. Choices are: date_joined, email, first_name, groups, id, is_active, is_staff, is_superuser, last_login, last_name, logentry, password, user_permissions, username
+
+Moved email_verfification_code from EmailVerification model to User model.
+Changed user model to AbstractUser as opposed to built in Django user model. 
+Attempted to makemigrations but received message:
+
+    It is impossible to add a non-nullable field 'password' to user without specifying a default. This is because the database needs something to populate existing rows.
+    Please select a fix:
+    1) Provide a one-off default now (will be set on all existing rows with a null value for this column)
+    2) Quit and manually define a default value in models.py.
+
+Ran command "python3 manage.py makemigrations --empty main_app" to generate empty migration file. Populated file and made migrations which worked.
+When I then attempted to runserver I received the below error:
+
+    File "/usr/local/lib/python3.10/site-packages/django/db/migrations/graph.py", line 60, in raise_error
+    raise NodeNotFoundError(self.error_message, self.key, origin=self.origin)
+    django.db.migrations.exceptions.NodeNotFoundError: Migration main_app.0004_auto_20230501_0830 dependencies reference nonexistent parent node ('main_app', '0003')
+
+Ran python3 manage.py showmigrations and there were no obvious issues. 
+Deleted Migrations folder.
+Created new Migrations folder and ran python3 manage.py makemigrations main_app.
+
+Ran server and received below error:
+
+    ProgrammingError at /verify-email/qPmuOToy6msv6J1qtFPe/
+    column main_app_user.last_login does not exist
+    LINE 1: SELECT "main_app_user"."id", "main_app_user"."last_login", "...
+
+Updated user model to include last_login.
+Unable to makemigrations automatically so created migration using python manage.py makemigrations main_app --empty.
+Updated migration with "migrations.RunSQL('UPDATE main_app_user SET last_login = NOW() WHERE last_login IS NULL;')" and could then migrate.
+
+After running server I now get error:
+
+    ProgrammingError at /verify-email/qPmuOToy6msv6J1qtFPe/
+    column main_app_user.is_superuser does not exist
+    LINE 1: SELECT "main_app_user"."id", "main_app_user"."is_superuser",...
 
 
 
@@ -295,5 +414,19 @@ SOLUTION:
 - Checked my register view and I must have accidently deleted "user = form.save()" from it. I created a couple of new users and managed to succesfully log in with them. I checked Django Admin and all had been saved.
 
 #
+
+5. When attempting to send a password reset email to a registered address I receive error: "SMTPAuthenticationError at /main_app/password_reset/" with Exception Value of: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials r5-20020adfdc85000000b002f985eee030sm3934022wrj.84 - gsmtp')
+
+- Double checked password/address was correct for 3gtproject@gmail.com; then changed password for account and updated in VS Code.
+- Double checked SMTP server and port number were correct.
+- IMAP updated to allowed in gmail settings. 
+- Online suggestion point to turning "Less secure app access" on in the associated Gmail account however this option is now obsolete. 
+- Suggestions to then create an "App password" in Gmail but again this would appear to be obsolete. 
+- Amended EMAIL_BACKEND from 'django.core.mail.backends.smtp.EmailBackend' to 'django.core.mail.backends.console.EmailBackend' and 'sent' email now appears in the Terminal (SCREENSHOT)
+- Decided to use AWS, signed up for account, created a user and added "AmazonSESFullAccess" permission to user. Generated access key and secret access key. Verified 3gtproject@gmail.com with AWS.
+- Didn't realise that with AWS you can only send emails to addresses that have also been verified. Verfieid my personal email address; realised 3gtproject@gmail.com and my own email address were verified on "us-east-1" so amended "AWS_SES_REGION_NAME/ENDPOINT" to "us-east-1" as opposed to "us-east-2" and then I succesfully sent a password reset email from 3gtproject@gmail.com to my personal email address.
+
+SOLUTION:
+- Swapped from GMAIL to AWS and updated all necessary settings in settings.py. Verified the "DEFAULT_FROM_EMAIL" address on AWS.
 
 
