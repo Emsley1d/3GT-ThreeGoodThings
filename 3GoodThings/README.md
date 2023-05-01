@@ -299,6 +299,21 @@ Now get the following error when clicking the verify password link:
 FieldError at /verify-email/qPmuOToy6msv6J1qtFPe/
 Cannot resolve keyword 'email_verification_code' into field. Choices are: date_joined, email, first_name, groups, id, is_active, is_staff, is_superuser, last_login, last_name, logentry, password, user_permissions, username
 
+Moved email_verfification_code from EmailVerification model to User model.
+Changed user model to AbstractUser as opposed to built in Django user model. 
+Attempted to makemigrations but received message:
+
+It is impossible to add a non-nullable field 'password' to user without specifying a default. This is because the database needs something to populate existing rows.
+Please select a fix:
+ 1) Provide a one-off default now (will be set on all existing rows with a null value for this column)
+ 2) Quit and manually define a default value in models.py.
+
+Ran command "python3 manage.py makemigrations --empty main_app" to generate empty migration file. Populated file and made migrations which worked.
+
+
+
+
+
 
 
 

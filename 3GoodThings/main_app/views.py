@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import UserRegistrationForm
 from django.urls import reverse_lazy
 from django.views import generic
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.views import PasswordChangeView
@@ -16,7 +16,6 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
-from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
@@ -33,6 +32,7 @@ from botocore.exceptions import ClientError
 import OpenSSL
 import random
 import string
+from main_app.models import User
 
 # Create your views here.
 
@@ -133,7 +133,7 @@ def send_verification_email(ses, email, verification_code):
 def verify_email(request, verification_code):
     try:
         user = User.objects.get(email_verification_code=verification_code)
-        user.is_email_verified = True
+        user.email_verification_code = None
         user.save()
         messages.success(request, 'Email address verified. You can now log in.')
         return redirect(settings.LOGIN_URL)
@@ -141,7 +141,7 @@ def verify_email(request, verification_code):
         messages.error(request, 'Invalid verification code.')
         return redirect('home')
     
-    
+
 class PasswordChangeDone(PasswordChangeDoneView):
     template_name = 'registration/password_change_done.html'
 
