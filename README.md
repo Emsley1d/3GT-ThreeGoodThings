@@ -335,7 +335,7 @@ After running server I now get error:
     column main_app_user.is_superuser does not exist
     LINE 1: SELECT "main_app_user"."id", "main_app_user"."is_superuser",...
     
-<!-- ! issue is with line 135 of views.py -->
+(issue is with line 135 of views.py)
 
 the same error also effects requesting a password reset by email; it appears if I enter an email address and click 'send email'.
 
@@ -345,7 +345,7 @@ and when I attempt to register a new user I receive the below error:
     AttributeError at /register/
     Manager isn't available; 'auth.User' has been swapped for 'main_app.User'
 
-<!-- ! issue is with line 72 of view.py -->
+(issue is with line 72 of view.py)
 
 same error also effects login functionality. 
 
